@@ -1,5 +1,6 @@
 package com.sample;
 
+import com.utils.ApplicationIdExtractor;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -46,6 +47,7 @@ public class RemoteSeleniumRunner extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String applicationId = null;
 		String environment = request.getParameter("environment");
 		String aggregator = request.getParameter("aggregator");
 		String appType = request.getParameter("appType");
@@ -70,20 +72,20 @@ public class RemoteSeleniumRunner extends HttpServlet {
 			System.out.println(mvnCommand);
 			Thread.sleep(10000);
 			/*
-			 * Process process = Runtime.getRuntime().exec(mvnCommand); BufferedReader
-			 * reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			 * String line; while ((line = reader.readLine()) != null) {
-			 * System.out.println(line); } process.waitFor();
+		    Process process = Runtime.getRuntime().exec(mvnCommand);
+		    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		    String line;
+		    while ((line = reader.readLine()) != null) {
+		       System.out.println(line);
+			   if(applicationId == null) {
+				   applicationId = ApplicationIdExtractor.extractAppId(line);
+			   }
+		    }
+		   process.waitFor();
 			 */
-			
-			String patternString = "Dtest2runparam=";
-			Pattern pattern = Pattern.compile(patternString);
-            Matcher matcher = pattern.matcher(mvnCommand);
-            if (matcher.find()) {
-                System.out.println("Pattern found: " + matcher.group());
-            } else {
-                System.out.println("Pattern not found.");
-            }
+
+			String consoleOutput = "DT Generated reference ID: 675679";
+			applicationId = ApplicationIdExtractor.extractAppId(consoleOutput);
             
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,7 +93,7 @@ public class RemoteSeleniumRunner extends HttpServlet {
 	
 		//doGet(request, response);
 		//response.getWriter().append("Application ID").append("23444455");
-		request.setAttribute("ApplicationId", "1234");
+		request.setAttribute("ApplicationId", applicationId);
 		request.setAttribute("environment",environment);
 		request.setAttribute("aggregator",aggregator);
 		request.setAttribute("appType",appType);

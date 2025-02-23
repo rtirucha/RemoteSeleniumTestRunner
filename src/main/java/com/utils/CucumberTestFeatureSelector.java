@@ -9,14 +9,14 @@ public class CucumberTestFeatureSelector {
 	public String featureFilePath = "C:\\Users\\rtiru\\eclipse-projects\\selenium-cucumber-java-master\\src\\test\\resources\\features\\";
 	
 	public void init() {
-		map.put("LendingTree_Individual","my_first11.feature");
-		map.put("LendingTree_Joint","my_first12.feature");
+		map.put("LT_Individual","my_first11.feature");
+		map.put("LT_Joint","my_first12.feature");
 		
-		map.put("Enterprise_Individual","my_first21.feature");
-		map.put("Enterprise_Joint","my_first22.feature");
+		map.put("EP_Individual","my_first21.feature");
+		map.put("EP_Joint","my_first22.feature");
 		
-		map.put("DealerTrack_Individual","my_first31.feature");
-		map.put("DealerTrack_Joint","my_first32.feature");
+		map.put("DT_Individual","my_first31.feature");
+		map.put("DT_Joint","my_first32.feature");
 		
 	}
 	
