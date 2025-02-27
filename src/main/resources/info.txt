@@ -1,0 +1,17 @@
+  <configuration>
+
+                    <systemProperties>
+
+                         <property>
+                            <name>test2run</name>
+                            <value>${test2run}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+
+
+                on top
+                 <properties>
+
+                        <test2run>${test2runparam}</test2run>
+                    </properties>
