@@ -43,9 +43,10 @@
     <br></br>
     <br></br>
     <%
-        String ApplicationId = (String) request.getAttribute("ApplicationId");
-        if (ApplicationId != null) {
-            out.println(" Application ID for "+aggregator+ " : " + ApplicationId);
+        String testResponse = (String) request.getAttribute("testResponse");
+        if (testResponse != null) {
+           // out.println(" Application ID for "+aggregator+ " : " + ApplicationId);
+            out.println(testResponse);
         }
 
 

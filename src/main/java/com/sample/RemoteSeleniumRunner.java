@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +22,7 @@ import com.utils.CucumberTestFeatureSelector;
 @WebServlet("/RemoteSeleniumRunner")
 public class RemoteSeleniumRunner extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private AtomicInteger numberOfConcurentTestsRunning = new AtomicInteger(0);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,19 +49,41 @@ public class RemoteSeleniumRunner extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String applicationId = null;
+		String testResponse = null;
 		String environment = request.getParameter("environment");
 		String aggregator = request.getParameter("aggregator");
 		String appType = request.getParameter("appType");
 		String testDataRow = request.getParameter("testDataRow");
 		System.out.println(
 				String.format("Test input %s - %s - %s - %s: ", environment, aggregator, appType, testDataRow));
+		int yourTestPos = numberOfConcurentTestsRunning.incrementAndGet();
+		if(yourTestPos > 3) {
+			// Send error
+			testResponse = String.format("%d tests are running in parallel, please try after few minutes",3);
+		}
+		else {
+			//execute tests
+			System.out.println("Your Test Position is " + yourTestPos);
+			testResponse = executeCucumberTests(aggregator, appType, testDataRow);
+		}
 
+		numberOfConcurentTestsRunning.decrementAndGet();
+		request.setAttribute("testResponse", testResponse);
+		request.setAttribute("environment",environment);
+		request.setAttribute("aggregator",aggregator);
+		request.setAttribute("appType",appType);
+		request.setAttribute("testDataRow",testDataRow);
+
+		request.getRequestDispatcher("index.jsp").forward(request, response);
+	}
+
+	private static String executeCucumberTests(String aggregator, String appType, String testDataRow) {
+		String testResponse = null;
 		String cucumberTestFeatureFile = new CucumberTestFeatureSelector().selectCucumberTestFeatureFile(aggregator,
 				appType);
 
 		System.out.println("Cucumber test Featurefile selected :" + cucumberTestFeatureFile);
-		
+
 		String mvnPath= "C:\\softwares\\apache-maven-3.9.9-bin\\apache-maven-3.9.9\\bin\\mvn";
 
 		try {
@@ -85,21 +109,12 @@ public class RemoteSeleniumRunner extends HttpServlet {
 			 */
 
 			String consoleOutput = "DT Generated reference ID: 675679";
-			applicationId = ApplicationIdExtractor.extractAppId(consoleOutput);
-            
+			testResponse = ApplicationIdExtractor.extractAppId(consoleOutput);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
-		//doGet(request, response);
-		//response.getWriter().append("Application ID").append("23444455");
-		request.setAttribute("ApplicationId", applicationId);
-		request.setAttribute("environment",environment);
-		request.setAttribute("aggregator",aggregator);
-		request.setAttribute("appType",appType);
-		request.setAttribute("testDataRow",testDataRow);
-
-		request.getRequestDispatcher("index.jsp").forward(request, response);
+		return testResponse;
 	}
 
 }
