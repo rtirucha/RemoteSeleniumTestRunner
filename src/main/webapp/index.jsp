@@ -37,6 +37,21 @@
 			<td><input type="text" id="testDataRow" name="testDataRow" value= '<%=testDataRow!=null ?testDataRow : "" %>' /></td>
 		</tr><br><br>
 
+          <tr>
+          <td><input type="checkbox" name="IE"
+          value="IE" /></td>
+          <td>Internet Explorer</td>
+          </tr>
+          <tr>
+          <td><input type="checkbox" name="Chrome"
+          value="Chrome" /></td>
+          <td>Chrome Browswer</td>
+          </tr>
+          <tr>
+          <td><input type="checkbox" name="Edge"
+          value="Edge" /></td>
+          <td>Micrsoft Edge</td>
+          </tr>
 		 <input type="submit" id="submit" value="Submit" data-submit-value="Processing Please wait">
     </form>
     <br></br>
